@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.R
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentSignInBinding
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
 
 class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
@@ -21,9 +22,10 @@ class SignInFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
         return binding.root
@@ -33,21 +35,25 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         auth = Firebase.auth
-        var currentUser = auth.currentUser
+        val currentUser = auth.currentUser
+
+//        toggle password visibility
+        binding.passwordInput.passwordVisiblityToggle(requireContext())
 
 //        session check
-        if(currentUser != null) {
+        if (currentUser != null) {
             findNavController().navigate(R.id.action_signInFragment_to_mainFragment)
             return
         }
+
 
 //        sign in button
         binding.signInButton.setOnClickListener {
             val email = binding.emailInput.text.toString()
             val password = binding.passwordInput.text.toString()
 
-            if(email.isNotEmpty()) {
-                if(password.isNotEmpty()) {
+            if (email.isNotEmpty()) {
+                if (password.isNotEmpty()) {
                     signIn(email, password)
                 } else {
 //                    password empty
@@ -67,7 +73,7 @@ class SignInFragment : Fragment() {
     private fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task: Task<AuthResult> ->
-                if(task.isSuccessful) {
+                if (task.isSuccessful) {
                     findNavController().navigate(R.id.action_signInFragment_to_mainFragment)
                 } else {
 //                        sign in error

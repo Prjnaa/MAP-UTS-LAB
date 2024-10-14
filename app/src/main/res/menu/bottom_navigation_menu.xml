@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/rounded_home_app_logo_24"
+        android:title="" />
+    <item
+        android:id="@+id/camFragment"
+        android:icon="@drawable/rounded_camera_24"
+        android:title="" />
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/rounded_manage_accounts_24"
+        android:title="" />
+</menu>

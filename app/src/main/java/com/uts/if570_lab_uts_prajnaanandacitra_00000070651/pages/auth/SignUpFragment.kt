@@ -13,6 +13,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.R
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentSignUpBinding
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.config.FirebaseConfig
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.User
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
 
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
@@ -21,9 +24,8 @@ class SignUpFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
         return binding.root
@@ -34,16 +36,28 @@ class SignUpFragment : Fragment() {
 
         auth = Firebase.auth
 
-        binding.signUpBtn.setOnClickListener {
-            val email = binding.editTextTextEmailAddress.text.toString()
-            val password = binding.editTextTextPassword.text.toString()
-            val confirmPassword = binding.editTextTextPasswordConfirm.text.toString()
+//        password visibility toggle
+        binding.passwordCreateInput.passwordVisiblityToggle(requireContext())
+        binding.confirmPassCreateInput.passwordVisiblityToggle(requireContext())
 
+        binding.signUpBtn.setOnClickListener {
+            val username = binding.usernameInput.text.toString()
+            val email = binding.editTextTextEmailAddress.text.toString()
+            val password = binding.passwordCreateInput.text.toString()
+            val confirmPassword = binding.confirmPassCreateInput.text.toString()
+
+            binding.usernameInput.error = null
             binding.editTextTextEmailAddress.error = null
-            binding.editTextTextPassword.error = null
-            binding.editTextTextPasswordConfirm.error = null
+            binding.passwordCreateInput.error = null
+            binding.confirmPassCreateInput.error = null
 
             var isValid = true
+
+//            username validation
+            if (username.isEmpty()) {
+                binding.usernameInput.error = getString(R.string.username_empty)
+                isValid = false
+            }
 
             //            email validation
             if (email.isEmpty()) {
@@ -56,23 +70,22 @@ class SignUpFragment : Fragment() {
 
             //            password validation
             if (password.isEmpty()) {
-                binding.editTextTextPassword.error = getString(R.string.password_empty)
+                binding.passwordCreateInput.error = getString(R.string.password_empty)
                 isValid = false
             } else if (confirmPassword.isEmpty()) {
-                binding.editTextTextPasswordConfirm.error = getString(R.string.password_empty)
+                binding.confirmPassCreateInput.error = getString(R.string.password_empty)
                 isValid = false
             } else if (password != confirmPassword) {
-                binding.editTextTextPassword.error = getString(R.string.password_not_match)
+                binding.passwordCreateInput.error = getString(R.string.password_not_match)
                 isValid = false
             } else if (!isPasswordStrong(password)) {
-                binding.editTextTextPassword.error = getString(R.string.password_error)
+                binding.passwordCreateInput.error = getString(R.string.password_error)
                 isValid = false
             }
 
             //            create account
             if (isValid) {
-                createAccount(email, password)
-                findNavController().navigate(R.id.action_signUpFragment_to_mainFragment)
+                createAccount(username, email, password)
             }
         }
 
@@ -87,26 +100,40 @@ class SignUpFragment : Fragment() {
         _binding = null
     }
 
-//    check email validity
+    //    check email validity
     private fun isEmailValid(email: String): Boolean {
         val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$".toRegex()
         return emailRegex.matches(email)
     }
 
-//    check password strength
+    //    check password strength
     private fun isPasswordStrong(password: String): Boolean {
         val passwordRegex =
             "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}$".toRegex()
         return passwordRegex.matches(password)
     }
 
-//    create account
-    private fun createAccount(email: String, password: String) {
+    //    create account
+    private fun createAccount(username: String, email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task: Task<AuthResult> ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
 
+                    user?.let {
+//                        new user object
+                        val newUser = User(it.uid, username, email)
+
+//                        store in firestore
+                        FirebaseConfig.firestoreInstance.collection("users").document(it.uid)
+                            .set(newUser)
+                            .addOnSuccessListener {
+                                findNavController().navigate(R.id.action_signUpFragment_to_mainFragment)
+                            }
+                            .addOnFailureListener { e ->
+//                                error handling
+                            }
+                    }
                 } else {
 
                 }
