@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "577179006093",
+    "project_id": "uts-map-53224",
+    "storage_bucket": "uts-map-53224.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577179006093:android:9da9005ce7d51aad6e5ec4",
+        "android_client_info": {
+          "package_name": "com.uts.if570_lab_uts_prajnaanandacitra_00000070651"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCvErL6vceGu7lRuKnFdANmeVopn8qX2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
