@@ -1,6 +1,7 @@
 package com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.auth
 
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,20 +12,25 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.R
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentSignUpBinding
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.config.FirebaseConfig
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.User
-import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
 
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
@@ -36,7 +42,7 @@ class SignUpFragment : Fragment() {
 
         auth = Firebase.auth
 
-//        password visibility toggle
+        //        password visibility toggle
         binding.passwordCreateInput.passwordVisiblityToggle(requireContext())
         binding.confirmPassCreateInput.passwordVisiblityToggle(requireContext())
 
@@ -46,6 +52,8 @@ class SignUpFragment : Fragment() {
             val password = binding.passwordCreateInput.text.toString()
             val confirmPassword = binding.confirmPassCreateInput.text.toString()
 
+
+
             binding.usernameInput.error = null
             binding.editTextTextEmailAddress.error = null
             binding.passwordCreateInput.error = null
@@ -53,7 +61,7 @@ class SignUpFragment : Fragment() {
 
             var isValid = true
 
-//            username validation
+            //            username validation
             if (username.isEmpty()) {
                 binding.usernameInput.error = getString(R.string.username_empty)
                 isValid = false
@@ -92,7 +100,6 @@ class SignUpFragment : Fragment() {
         binding.signInRedirect.setOnClickListener {
             findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
         }
-
     }
 
     override fun onDestroy() {
@@ -102,8 +109,7 @@ class SignUpFragment : Fragment() {
 
     //    check email validity
     private fun isEmailValid(email: String): Boolean {
-        val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$".toRegex()
-        return emailRegex.matches(email)
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     //    check password strength
@@ -115,27 +121,31 @@ class SignUpFragment : Fragment() {
 
     //    create account
     private fun createAccount(username: String, email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(requireActivity()) { task: Task<AuthResult> ->
+        db = FirebaseConfig.getFirestore()
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
+            requireActivity()) { task: Task<AuthResult> ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
 
                     user?.let {
-//                        new user object
+                        // Create a new user object
                         val newUser = User(it.uid, username, email)
 
-//                        store in firestore
-                        FirebaseConfig.firestoreInstance.collection("users").document(it.uid)
+                        // Store in Firestore
+                        db.collection("users")
+                            .document(it.uid) // Use user's UID as the document ID
                             .set(newUser)
                             .addOnSuccessListener {
-                                findNavController().navigate(R.id.action_signUpFragment_to_mainFragment)
+                                findNavController()
+                                    .navigate(R.id.action_signUpFragment_to_mainFragment)
                             }
                             .addOnFailureListener { e ->
-//                                error handling
+                                // You can also show a Toast message to the user here if desired
                             }
                     }
                 } else {
-
+                    // Handle account creation failure
+                    // You can also show a Toast message to the user here if desired
                 }
             }
     }

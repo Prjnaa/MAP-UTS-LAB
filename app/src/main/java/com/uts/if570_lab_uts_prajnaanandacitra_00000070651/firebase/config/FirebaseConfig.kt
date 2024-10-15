@@ -1,25 +1,46 @@
 package com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.config
 
 import android.content.Context
+import android.util.Log
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.firestore.FirebaseFirestore
 
 object FirebaseConfig {
-    lateinit var firestoreInstance: FirebaseFirestore
+    @Volatile
+    private var firestoreInstance: FirebaseFirestore? = null
 
     fun initializeApp(context: Context) {
-        FirebaseApp.initializeApp(context)
+        try {
+            FirebaseApp.initializeApp(context)
 
-        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-            PlayIntegrityAppCheckProviderFactory.getInstance()
-        )
+            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+                PlayIntegrityAppCheckProviderFactory.getInstance()
+            )
 
-        initializeDb()
+            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+                DebugAppCheckProviderFactory.getInstance()
+            )
+
+            initializeDb()
+        } catch (e: Exception) {
+            Log.e("FirebaseError", "Firebase initialization error: ${e.message}", e)
+        }
     }
 
-    fun initializeDb() {
-        firestoreInstance = FirebaseFirestore.getInstance()
+    private fun initializeDb() {
+        if (firestoreInstance == null) {
+            synchronized(this) {
+                if (firestoreInstance == null) {
+                    firestoreInstance = FirebaseFirestore.getInstance()
+                }
+            }
+        }
+    }
+
+    fun getFirestore(): FirebaseFirestore {
+        return firestoreInstance ?: throw IllegalStateException("Firestore not initialized")
     }
 }

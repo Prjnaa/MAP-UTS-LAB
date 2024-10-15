@@ -27,4 +27,8 @@
     <string name="no_acc">Don\'t have an account ?</string>
 
 
+<!--    GREETINGS-->
+    <string name="greetings_morning">Good Morning</string>
+    <string name="greetings_afternoon">Good Afternoon</string>
+    <string name="greetings_evening">Good Evening</string>
 </resources>

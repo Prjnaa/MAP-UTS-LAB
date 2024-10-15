@@ -8,7 +8,8 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.main.MainFragment"
-        android:label="Main Fragment">
+        android:label="Main Fragment"
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
@@ -17,7 +18,8 @@
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.auth.SignInFragment"
-        android:label="Sign In Fragment">
+        android:label="Sign In Fragment"
+        tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_signInFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -30,7 +32,7 @@
         android:id="@+id/signUpFragment"
         android:name="com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.auth.SignUpFragment"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" >
+        tools:layout="@layout/fragment_sign_up">
         <action
             android:id="@+id/action_signUpFragment_to_mainFragment"
             app:destination="@id/mainFragment" />

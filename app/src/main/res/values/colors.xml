@@ -3,6 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="sun">#FF9800</color>
+    <color name="moon">#636A7A</color>
+
     <color name="link_blue">@android:color/holo_blue_dark</color>
 
     <!-- Light Theme Colors -->
