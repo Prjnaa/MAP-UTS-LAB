@@ -11,6 +11,12 @@
         android:label="Main Fragment"
         tools:layout="@layout/fragment_main">
         <action
+            android:id="@+id/action_mainFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_attendanceFragment"
+            app:destination="@id/attendanceFragment" />
+        <action
             android:id="@+id/action_mainFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
     </fragment>
@@ -26,6 +32,9 @@
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_mainFragment2"
+            app:destination="@id/mainFragment" />
     </fragment>
 
     <fragment
@@ -39,5 +48,34 @@
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_mainFragment2"
+            app:destination="@id/mainFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.account.AccountFragment"
+        android:label="fragment_account"
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/attendanceFragment"
+        android:name="com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.attendance.AttendanceFragment"
+        android:label="fragment_attendance"
+        tools:layout="@layout/fragment_attendance" >
+        <action
+            android:id="@+id/action_attendanceFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_signInFragment"
+        app:destination="@id/signInFragment" />
 </navigation>

@@ -17,18 +17,4 @@
         app:navGraph="@navigation/navigation_graph"
         tools:layout="@layout/fragment_main" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        style="@style/CustomBottomNavigation"
-        android:layout_width="0dp"
-        android:layout_height="72dp"
-        android:layout_gravity="bottom"
-        android:background="@color/background"
-        app:itemIconSize="36dp"
-        app:labelVisibilityMode="unlabeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

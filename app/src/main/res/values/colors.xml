@@ -3,17 +3,21 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="sun">#FF9800</color>
+    <color name="sun">#FFCF3C</color>
     <color name="moon">#636A7A</color>
+
+    <color name="warning">#CB2828</color>
+
+    <color name="user_image_background">#808080</color>
 
     <color name="link_blue">@android:color/holo_blue_dark</color>
 
     <!-- Light Theme Colors -->
-    <color name="primary">#4CAF50</color>
-    <color name="primary_dark">#388E3C</color>
-    <color name="primary_light">#A5D6A7</color>
-    <color name="accent">#FFC107</color>
-    <color name="background">#F1F8E9</color>
-    <color name="text_primary">#212121</color>
+    <color name="primary">#A0C4FF</color> <!-- Pastel blue -->
+    <color name="primary_dark">#83A7E0</color> <!-- Slightly darker pastel blue -->
+    <color name="primary_light">#DCE8FF</color> <!-- Very light pastel blue -->
+    <color name="accent">#FFC6FF</color> <!-- Pastel pink -->
+    <color name="background">#FFFFFF</color> <!-- White background -->
+    <color name="text_primary">#212121</color> <!-- Dark text -->
 
 </resources>

@@ -12,6 +12,10 @@
     <style name="CustomBottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="itemIconTint">@color/primary_dark</item>
     </style>
+    <style name="circleImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
     
     <style name="Theme.IF570_LAB_UTS_PrajnaAnandaCitra_00000070651" parent="Base.Theme.IF570_LAB_UTS_PrajnaAnandaCitra_00000070651" />
 </resources>

@@ -5,10 +5,10 @@
     <color name="link_blue">@android:color/holo_blue_light</color>
 
     <!-- Dark Theme Colors -->
-    <color name="primary">#4CAF50</color>
-    <color name="primary_dark">#2E7D32</color>
-    <color name="primary_light">#A5D6A7</color>
-    <color name="accent">#FFC107</color>
-    <color name="background">#121212</color>
-    <color name="text_primary">#FFFFFF</color>
+    <color name="primary">#5A8EDB</color> <!-- Muted blue for dark mode -->
+    <color name="primary_dark">#416FB1</color> <!-- Darker muted blue -->
+    <color name="primary_light">#89B3FF</color> <!-- Lighter muted blue -->
+    <color name="accent">#FFABE1</color> <!-- Pastel pink accent -->
+    <color name="background">#121212</color> <!-- Dark background -->
+    <color name="text_primary">#E0E0E0</color> <!-- Light text -->
 </resources>

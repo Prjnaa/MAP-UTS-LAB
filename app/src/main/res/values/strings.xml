@@ -27,8 +27,35 @@
     <string name="no_acc">Don\'t have an account ?</string>
 
 
-<!--    GREETINGS-->
+    <!--    GREETINGS-->
     <string name="greetings_morning">Good Morning</string>
     <string name="greetings_afternoon">Good Afternoon</string>
     <string name="greetings_evening">Good Evening</string>
+
+    <!--    ACCOUNT RELATED-->
+    <string name="sign_out">Sign Out</string>
+    <string name="save">Save</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="account">Account</string>
+
+    <!--    ATTENDANCE-->
+    <string name="history">History</string>
+    <string name="attendance_button">Attendance check in/out button</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="upload">Upload Photo</string>
+    <string name="submit_in">Check In</string>
+    <string name="submit_out">Check Out</string>
+    <string name="discard">Discard Photo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--    HISTORY-->
+    <string name="check_in_time">Check-In Time</string>
+    <string name="check_out_time">Check-Out Time</string>
+    <string name="time_placeholder">00:00:00</string>
+
+
 </resources>

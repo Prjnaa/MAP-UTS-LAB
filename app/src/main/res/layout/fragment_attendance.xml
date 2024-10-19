@@ -1,0 +1,141 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center_vertical"
+    android:padding="16dp">
+
+    <!-- Preview Area -->
+    <androidx.cardview.widget.CardView
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:id="@+id/cardPreview"
+        android:layout_width="match_parent"
+        android:layout_height="368dp"
+        android:layout_marginTop="78dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/viewFinder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/imagePreview"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageButton
+        android:id="@+id/backButtonFromAttendance"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="backButton"
+        android:scaleType="centerInside"
+        android:src="@drawable/baseline_arrow_back_ios_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_primary" />
+
+    <Button
+        android:id="@+id/btnCapture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cardPreview"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/primary_dark"
+        android:drawableLeft="@drawable/baseline_camera_24"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/white"
+        android:elevation="0dp"
+        android:text="@string/take_photo"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:cornerRadius="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardPreview" />
+
+    <Button
+        android:id="@+id/btnUpload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnCapture"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/primary_dark"
+        android:drawableLeft="@drawable/baseline_file_upload_24"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/white"
+        android:elevation="0dp"
+        android:text="@string/upload"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:cornerRadius="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCapture" />
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnUpload"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/primary"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/white"
+        android:elevation="0dp"
+        android:text="@string/submit_in"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:cornerRadius="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnUpload" />
+
+    <Button
+        android:id="@+id/discardImgBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/warning"
+        android:elevation="8dp"
+        android:text="@string/discard"
+        android:textColor="@color/white"
+        app:cornerRadius="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardPreview"
+        tools:visibility="gone" />
+
+    <TextClock
+        android:id="@+id/textClock2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:format12Hour="HH:mm:ss"
+        android:format24Hour="HH:mm:ss"
+        android:gravity="center"
+        android:minHeight="48dp"
+        android:textColor="@color/text_primary"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

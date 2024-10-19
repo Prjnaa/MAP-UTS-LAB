@@ -7,10 +7,14 @@ import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 object FirebaseConfig {
     @Volatile
     private var firestoreInstance: FirebaseFirestore? = null
+
+    @Volatile
+    private var storageInstance: FirebaseStorage? = null
 
     fun initializeApp(context: Context) {
         try {
@@ -25,6 +29,7 @@ object FirebaseConfig {
             )
 
             initializeDb()
+            initializeStorage()
         } catch (e: Exception) {
             Log.e("FirebaseError", "Firebase initialization error: ${e.message}", e)
         }
@@ -40,7 +45,21 @@ object FirebaseConfig {
         }
     }
 
+    private fun initializeStorage() {
+        if(storageInstance == null) {
+            synchronized(this) {
+                if(storageInstance == null) {
+                    storageInstance = FirebaseStorage.getInstance()
+                }
+            }
+        }
+    }
+
     fun getFirestore(): FirebaseFirestore {
         return firestoreInstance ?: throw IllegalStateException("Firestore not initialized")
+    }
+
+    fun getStorage(): FirebaseStorage {
+        return storageInstance ?: throw IllegalStateException("Storage not initialized")
     }
 }
