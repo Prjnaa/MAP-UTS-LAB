@@ -19,6 +19,7 @@ import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentS
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.Attendance
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.User
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.utils.sessionCheck
 
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
@@ -40,6 +41,7 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
@@ -47,6 +49,8 @@ class SignUpFragment : Fragment() {
             passwordCreateInput.passwordVisiblityToggle(requireContext())
 
             confirmPassCreateInput.passwordVisiblityToggle(requireContext())
+
+
 
             signUpBtn.setOnClickListener { validateAndSignUp() }
 
@@ -65,6 +69,7 @@ class SignUpFragment : Fragment() {
     private fun validateAndSignUp() {
         val username = binding.usernameInput.text.toString()
         val email = binding.editTextTextEmailAddress.text.toString()
+        val nim = binding.nimInput.text.toString()
         val password = binding.passwordCreateInput.text.toString()
         val confirmPassword = binding.confirmPassCreateInput.text.toString()
 
@@ -72,6 +77,7 @@ class SignUpFragment : Fragment() {
 
         when {
             username.isEmpty() -> setError(binding.usernameInput, R.string.username_empty)
+            nim.isEmpty() -> setError(binding.nimInput, R.string.nim_empty)
             email.isEmpty() -> setError(binding.editTextTextEmailAddress, R.string.email_empty)
             !isEmailValid(email) ->
                 setError(binding.editTextTextEmailAddress, R.string.email_invalid)
@@ -82,7 +88,7 @@ class SignUpFragment : Fragment() {
                 setError(binding.passwordCreateInput, R.string.password_not_match)
             !isPasswordStrong(password) ->
                 setError(binding.passwordCreateInput, R.string.password_error)
-            else -> createAccount(username, email, password)
+            else -> createAccount(username, nim, email, password)
         }
     }
 
@@ -112,7 +118,7 @@ class SignUpFragment : Fragment() {
     }
 
     //    create account
-    private fun createAccount(username: String, email: String, password: String) {
+    private fun createAccount(username: String, studentId: String, email: String, password: String) {
         binding.signUpBtn.isEnabled = false
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
@@ -122,7 +128,7 @@ class SignUpFragment : Fragment() {
 
                     user?.let {
                         // Create a new user object
-                        val newUser = User(username, email, "")
+                        val newUser = User(username, studentId, email, "")
 
                         // Store in Firestore
                         db.collection("users")

@@ -2,6 +2,7 @@ package com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.account
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,7 @@ class AccountFragment : Fragment() {
 
         var username = ""
         var email = ""
+        var nim = ""
         var imageUrl = ""
 
         auth = FirebaseAuth.getInstance()
@@ -55,14 +57,17 @@ class AccountFragment : Fragment() {
         //        get user info from database
         auth.getCurrentUserFromDB(db) { user ->
             user?.let {
-                username = it.username
-                email = it.email
-                imageUrl = it.imageUrl
+
+                username = it.username ?: "Not Set."
+                nim = it.nim ?: "Not Set."
+                email = it.email ?: "Not Set."
+                imageUrl = it.imageUrl ?: ""
 
                 //        show user info
                 binding.usernameShow.text = username
-                binding.editEmail.setText(email)
                 binding.editUsername.setText(username)
+                binding.editNimText.setText(nim)
+                binding.editEmail.setText(email)
 
                 Glide.with(this)
                     .load(imageUrl)
@@ -78,10 +83,11 @@ class AccountFragment : Fragment() {
         //        save button
         binding.saveUserInfoBtn.setOnClickListener {
             val newUsername = binding.editUsername.text.toString()
+            val newNim = binding.editNimText.text.toString()
             val newEmail = binding.editEmail.text.toString()
 
-            if (newUsername.isNotEmpty() && newEmail.isNotEmpty()) {
-                saveUserUpdate(newUsername, newEmail)
+            if (newUsername.isNotEmpty() && newEmail.isNotEmpty() && newNim.isNotEmpty()) {
+                saveUserUpdate(newUsername, newNim, newEmail)
             } else {
                 //        show error message
             }
@@ -116,9 +122,12 @@ class AccountFragment : Fragment() {
                 }
         }
 
-    private fun saveUserUpdate(newUsername: String, newEmail: String) {
+    private fun saveUserUpdate(newUsername: String, newNim: String, newEmail: String) {
         auth.currentUser?.let {
-            val newInfo = mapOf("username" to newUsername, "email" to newEmail)
+            val newInfo =
+                mapOf("username" to newUsername,
+                    "nim" to newNim,
+                    "email" to newEmail)
 
             db.collection("users")
                 .document(it.uid)
@@ -126,6 +135,7 @@ class AccountFragment : Fragment() {
                 .addOnSuccessListener {
                     binding.usernameShow.text = newUsername
                     binding.editUsername.setText(newUsername)
+                    binding.editNimText.setText(newNim)
                     binding.editEmail.setText(newEmail)
                 }
                 .addOnFailureListener { e ->

@@ -1,6 +1,7 @@
 package com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,10 +40,15 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sessionCheck()
-
         auth = FirebaseAuth.getInstance()
         db = FirebaseConfig.getFirestore()
+
+        Log.d("MainFragment", "onViewCreated: ${auth.currentUser?.uid}")
+
+        if (auth.currentUser == null) {
+            findNavController().navigate(R.id.action_mainFragment_to_signInFragment)
+            return
+        }
 
         showUsername()
         iconState()
@@ -55,29 +61,39 @@ class MainFragment : Fragment() {
                 findNavController().navigate(R.id.action_mainFragment_to_accountFragment)
             }
 
-            checkIfAllowed { isAllowed ->
-                attendanceBtn.isEnabled = isAllowed
-                val drawable = attendanceBtn.background
-                if (isAllowed) {
-                    DrawableCompat.setTint(
-                        drawable,
-                        ContextCompat.getColor(requireContext(), R.color.primary)
-                    ) // Use the default color
-                    attendanceBtn.setOnClickListener {
-                        findNavController().navigate(R.id.action_mainFragment_to_attendanceFragment)
-                    }
-                } else {
-                    DrawableCompat.setTint(
-                        drawable,
-                        ContextCompat.getColor(requireContext(), R.color.warning)
-                    )
-                }
-                attendanceBtn.background = drawable
+            historyPageButton.setOnClickListener {
+                findNavController().navigate(R.id.action_mainFragment_to_historyFragment)
             }
+
         }
 
         // Clear the text initially
-        updateCheckInOutTimeDisplay() // Update check-in/out time display
+        updateCheckInOutTimeDisplay()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        checkIfAllowed { isAllowed ->
+            val drawable = binding.attendanceBtn.background
+            if (isAllowed) {
+                DrawableCompat.setTint(
+                    drawable,
+                    ContextCompat.getColor(requireContext(), R.color.primary)
+                ) // Use the default color
+                binding.attendanceBtn.isEnabled = true
+                binding.attendanceBtn.setOnClickListener {
+                    findNavController().navigate(R.id.action_mainFragment_to_attendanceFragment)
+                }
+            } else {
+                binding.attendanceBtn.isEnabled = false
+                DrawableCompat.setTint(
+                    drawable,
+                    ContextCompat.getColor(requireContext(), R.color.warning)
+                )
+            }
+            binding.attendanceBtn.background = drawable
+        }
     }
 
     override fun onDestroy() {

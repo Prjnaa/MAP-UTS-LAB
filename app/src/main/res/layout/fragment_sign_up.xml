@@ -54,6 +54,23 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:id="@+id/nimInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:autofillHints="username"
+            android:ems="10"
+            android:hint="@string/nim_input"
+            android:inputType="text"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/usernameInput" />
+
+        <EditText
             android:id="@+id/editTextTextEmailAddress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -67,7 +84,7 @@
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/usernameInput" />
+            app:layout_constraintTop_toBottomOf="@+id/nimInput" />
 
         <EditText
             android:id="@+id/passwordCreateInput"

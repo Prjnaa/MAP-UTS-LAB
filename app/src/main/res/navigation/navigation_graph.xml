@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_mainFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
 
     <fragment
@@ -78,4 +81,13 @@
     <action
         android:id="@+id/action_global_signInFragment"
         app:destination="@id/signInFragment" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.history.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
 </navigation>

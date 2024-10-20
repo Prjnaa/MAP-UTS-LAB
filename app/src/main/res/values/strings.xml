@@ -20,6 +20,8 @@
     <string name="email_invalid">Please fill a valid email.</string>
     <string name="username_hint">Username</string>
     <string name="username_empty">Please fill the username.</string>
+    <string name="nim_input">NIM</string>
+    <string name="nim_empty">Please fill the NIM field.</string>
 
     <!--    SIGN IN-->
     <string name="sign_in">Sign In</string>
@@ -53,9 +55,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--    HISTORY-->
+    <string name="no_data">No Records Found.</string>
     <string name="check_in_time">Check-In Time</string>
     <string name="check_out_time">Check-Out Time</string>
     <string name="time_placeholder">00:00:00</string>
+    <string name="date_placeholder">Date</string>
 
 
 </resources>
