@@ -65,8 +65,6 @@ class MainFragment : Fragment() {
             }
         }
 
-        // Clear the text initially
-        updateCheckInOutTimeDisplay()
     }
 
     override fun onResume() {
@@ -127,9 +125,14 @@ class MainFragment : Fragment() {
                                 todayAttendance.checkOutTime.isEmpty())
 
                     updateAttendButtonState(isAllowed)
-                } ?: updateAttendButtonState(true)
+                    updateCheckInOutTimeDisplay()
+                } ?: run {
+                    updateAttendButtonState(true)
+                    updateCheckInOutTimeDisplay()
+                }
             } else {
                 updateAttendButtonState(true)
+                updateCheckInOutTimeDisplay()
             }
         }
     }

@@ -5,7 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:paddingTop="32dp"
+    android:paddingHorizontal="16dp"
+    android:paddingBottom="16dp"
     android:visibility="visible"
     tools:context=".pages.main.MainFragment">
 
@@ -17,7 +19,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:textColor="@color/primary_dark"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/userImage"
         app:layout_constraintHorizontal_bias="0.0"
@@ -59,6 +61,7 @@
         android:layout_height="120dp"
         android:layout_marginTop="42dp"
         app:cardCornerRadius="16dp"
+        android:backgroundTint="@color/primary_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,6 +80,7 @@
                 android:id="@+id/divider"
                 android:layout_width="2dp"
                 android:layout_height="94dp"
+                android:backgroundTint="@color/white"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -109,7 +113,7 @@
                     android:layout_marginStart="8dp"
                     android:format12Hour="HH:mm"
                     android:format24Hour="HH:mm"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/white"
                     android:textSize="36sp"
                     android:textStyle="bold" />
 
@@ -123,7 +127,7 @@
                     android:format24Hour=": ss"
                     android:textAlignment="textStart"
                     android:textAllCaps="true"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/white"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -143,6 +147,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Day"
+                    android:textColor="@color/white"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -151,6 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Date"
+                    android:textColor="@color/white"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -159,6 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Year"
+                    android:textColor="@color/white"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -173,7 +180,7 @@
         android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginTop="24dp"
-        android:backgroundTint="@color/primary_light"
+        android:backgroundTint="@color/primary_dark"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -201,17 +208,18 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/baseline_history_24"
-                    app:tint="@color/text_primary" />
+                    app:tint="@color/white" />
 
                 <TextView
                     android:id="@+id/historyText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
-                    android:drawableTint="@color/text_primary"
+                    android:drawableTint="@color/white"
                     android:text="@string/history"
                     android:textAllCaps="false"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:textColor="@color/white"/>
             </LinearLayout>
 
             <View
@@ -226,7 +234,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:backgroundTint="@color/white"
+                />
 
             <LinearLayout
                 android:id="@+id/accountPageButton"
@@ -245,17 +255,19 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/baseline_person_24"
-                    app:tint="@color/text_primary" />
+                    app:tint="@color/white" />
 
                 <TextView
                     android:id="@+id/accountText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
-                    android:drawableTint="@color/text_primary"
+                    android:drawableTint="@color/white"
                     android:text="@string/account"
                     android:textAllCaps="false"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    />
 
             </LinearLayout>
 
@@ -270,6 +282,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:padding="24dp"
+        android:backgroundTint="@color/primary_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
@@ -295,6 +308,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="48sp"
+                    android:textColor="@color/white"
                     android:text="Attendance"
                     android:textSize="32sp" />
             </LinearLayout>
@@ -328,7 +342,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textAlignment="center"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/white"
                 android:textSize="24sp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -340,7 +354,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/white"
                 android:textSize="24sp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"

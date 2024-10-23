@@ -21,6 +21,7 @@
             android:layout_marginTop="60dp"
             android:text="@string/welcome_text"
             android:textSize="24sp"
+            android:textColor="@color/primary"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,6 +34,7 @@
             android:layout_marginTop="92dp"
             android:text="@string/create_acc_text"
             android:textSize="24sp"
+            android:textColor="@color/primary"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

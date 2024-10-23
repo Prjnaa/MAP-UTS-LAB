@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:padding="16dp"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="32dp"
+    android:paddingBottom="16dp"
     tools:context=".pages.account.AccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,6 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:backgroundTint="@color/primary_light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/usernameShow">
@@ -103,30 +106,39 @@
                 android:paddingBottom="12dp">
 
                 <EditText
+                    android:theme="@style/Theme.Material3.Dark.BottomSheetDialog"
                     android:id="@+id/editUsername"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:ems="10"
                     android:hint="@string/username_hint"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white" />
 
                 <EditText
+                    android:theme="@style/Theme.Material3.Dark.BottomSheetDialog"
                     android:id="@+id/editNimText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:ems="10"
                     android:hint="@string/nim_input"
-                    android:minHeight="48dp" />
+                    android:minHeight="48dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white" />
 
                 <EditText
+                    android:theme="@style/Theme.Material3.Dark.BottomSheetDialog"
                     android:id="@+id/editEmail"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="12dp"
                     android:ems="10"
                     android:hint="@string/email_hint"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -165,7 +177,7 @@
             android:layout_marginStart="26dp"
             android:layout_marginTop="64dp"
             android:layout_marginEnd="26dp"
-            android:backgroundTint="@color/safe"
+            android:backgroundTint="@color/primary"
             android:text="@string/change_password"
             android:textColor="@color/white"
             app:cornerRadius="12dp"

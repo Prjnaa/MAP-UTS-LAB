@@ -6,21 +6,21 @@
     <color name="transparent">#00000000</color>
 
     <color name="sun">#FFCF3C</color>
-    <color name="moon">#636A7A</color>
+    <color name="moon">#B9C1D2</color>
 
     <color name="safe">#61B986</color>
-    <color name="danger">#D32F2F</color>
+    <color name="danger">#E96262</color>
 
     <color name="user_image_background">#808080</color>
 
     <color name="link_blue">@android:color/holo_blue_dark</color>
 
     <!-- Light Theme Colors -->
-    <color name="primary">#A0C4FF</color> <!-- Pastel blue -->
-    <color name="primary_dark">#83A7E0</color> <!-- Slightly darker pastel blue -->
-    <color name="primary_light">#DCE8FF</color> <!-- Very light pastel blue -->
-    <color name="accent">#FFC6FF</color> <!-- Pastel pink -->
+    <color name="primary">#4461F2</color> <!-- Bright blue from logo -->
+    <color name="primary_dark">#2C3EA8</color> <!-- Darker blue -->
+    <color name="primary_light">#8494FF</color> <!-- Light blue -->
+    <color name="accent">#7B4DFF</color> <!-- Purple accent -->
     <color name="background">#FFFFFF</color> <!-- White background -->
-    <color name="text_primary">#212121</color> <!-- Dark text -->
+    <color name="text_primary">#1A1C38</color> <!-- Dark blue-gray -->
 
 </resources>
