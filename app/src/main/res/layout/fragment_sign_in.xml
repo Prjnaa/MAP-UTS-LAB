@@ -100,6 +100,7 @@
             android:layout_marginEnd="26dp"
             android:minHeight="52dp"
             android:text="@string/sign_in"
+            android:textColor="@color/white"
             app:cornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

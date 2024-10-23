@@ -1,7 +1,6 @@
 package com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.auth
 
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,6 @@ import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentS
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.Attendance
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.User
-import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.utils.sessionCheck
 
 class SignUpFragment : Fragment() {
     private var _binding: FragmentSignUpBinding? = null
@@ -41,7 +39,6 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
@@ -49,8 +46,6 @@ class SignUpFragment : Fragment() {
             passwordCreateInput.passwordVisiblityToggle(requireContext())
 
             confirmPassCreateInput.passwordVisiblityToggle(requireContext())
-
-
 
             signUpBtn.setOnClickListener { validateAndSignUp() }
 
@@ -118,7 +113,12 @@ class SignUpFragment : Fragment() {
     }
 
     //    create account
-    private fun createAccount(username: String, studentId: String, email: String, password: String) {
+    private fun createAccount(
+        username: String,
+        studentId: String,
+        email: String,
+        password: String
+    ) {
         binding.signUpBtn.isEnabled = false
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
@@ -127,40 +127,49 @@ class SignUpFragment : Fragment() {
                     val user = auth.currentUser
 
                     user?.let {
+                        it.email?.let { email -> sendVerificationEmail(email) }
+
                         // Create a new user object
-                        val newUser = User(username, studentId, email, "")
+                        val newUser = User(username, studentId, "")
 
                         // Store in Firestore
-                        db.collection("users")
-                            .document(it.uid)
-                            .set(newUser)
-                            .addOnSuccessListener {
-                                initializeUserAttendance(user.uid)
+                        db.collection("users").document(it.uid).set(newUser).addOnSuccessListener {
+                            initializeUserAttendance(user.uid)
 
-                                findNavController()
-                                    .navigate(R.id.action_signUpFragment_to_mainFragment)
-                            }
-                            .addOnFailureListener { e ->
-                                // You can also show a Toast message to the user here if desired
-                                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
+                            auth.signOut()
+
+                            Toast.makeText(
+                                    requireContext(),
+                                    "Verification email sent to ${email}. Please verify your email before logging in.",
+                                    Toast.LENGTH_LONG)
+                                .show()
+
+                            findNavController()
+                                .navigate(R.id.action_signUpFragment_to_signInFragment)
+                        }
                     }
                 } else {
-                    // Handle account creation failure
                     Toast.makeText(requireContext(), "Sign Up Failed", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
+    private fun sendVerificationEmail(email: String) {
+        auth.currentUser?.sendEmailVerification()?.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Toast.makeText(
+                        requireContext(), "Failed to send verification email.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
     private fun initializeUserAttendance(userId: String) {
         val attendance = Attendance(userId, emptyList())
 
-        db.collection("attendance")
-            .document(userId)
-            .set(attendance)
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Attendance State Creation Failed", Toast.LENGTH_SHORT).show()
-            }
+        db.collection("attendance").document(userId).set(attendance).addOnFailureListener { e ->
+            Toast.makeText(requireContext(), "Attendance State Creation Failed", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 }

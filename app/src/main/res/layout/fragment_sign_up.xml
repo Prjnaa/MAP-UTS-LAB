@@ -146,6 +146,7 @@
             android:layout_marginTop="720dp"
             android:layout_marginEnd="26dp"
             android:text="@string/sign_up"
+            android:textColor="@color/white"
             app:cornerRadius="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"

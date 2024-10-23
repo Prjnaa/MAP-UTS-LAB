@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -33,7 +34,6 @@ import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentA
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.config.FirebaseConfig
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.Attendance
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.AttendanceItem
-import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.utils.sessionCheck
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
@@ -68,79 +68,50 @@ class AttendanceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sessionCheck()
-
-        // Initialize Firebase instances
         auth = Firebase.auth
         db = FirebaseConfig.getFirestore()
         storage = FirebaseConfig.getStorage()
 
-        // Handle camera permissions
         handleCameraPermission()
+        updateUserCheckInState()
 
-        getIsUserCheckedInFromDB { checkInState -> isCheckIn = checkInState }
-
-
-        with(binding) {
-            if(isCheckIn == true) {
-                btnSubmit.text = getString(R.string.submit_in)
-            } else {
-                btnSubmit.text = getString(R.string.submit_out)
-            }
-
-            discardImgBtn.visibility = View.GONE
-
+        binding.apply {
             btnCapture.setOnClickListener { takePhoto() }
-
-            backButtonFromAttendance.setOnClickListener {
-                stopCamera()
-                imageCapture = null
-                findNavController().navigate(R.id.action_attendanceFragment_to_mainFragment)
-            }
-
+            backButtonFromAttendance.setOnClickListener { navigateBack() }
             btnUpload.setOnClickListener { uploadPhotoFromGallery() }
-
             btnSubmit.setOnClickListener { submitAttendance() }
+        }
+    }
+
+    private fun updateUserCheckInState() {
+        getIsUserCheckedInFromDB { checkInState ->
+            isCheckIn = checkInState
+            binding.btnSubmit.text =
+                getString(if (isCheckIn == true) R.string.submit_in else R.string.submit_out)
+            binding.discardImgBtn.visibility = View.GONE
         }
     }
 
     private fun getIsUserCheckedInFromDB(callback: (Boolean) -> Unit) {
         val uid = auth.currentUser?.uid ?: return
         val userRef = db.collection("attendance").document(uid)
-
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val currentDate = dateFormat.format(Date())
+        val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
 
         userRef
             .get()
             .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val attendance = document.toObject(Attendance::class.java)
-                    attendance?.attendanceList?.let { attendanceList ->
-                        val todayAttendance =
-                            attendanceList.find { item -> item.date == currentDate }
-                        if (todayAttendance != null) {
-                            // User has an attendance record for today
-                            isCheckIn = todayAttendance.checkInTime.isNotEmpty()
-                        } else {
-                            // No attendance record for today
-                            isCheckIn = false
-                        }
-                        callback(isCheckIn!!)
+                isCheckIn =
+                    if (document.exists()) {
+                        val attendance = document.toObject(Attendance::class.java)
+                        attendance?.attendanceList?.any {
+                            it.date == currentDate && it.checkInTime.isNotEmpty()
+                        } ?: false
+                    } else {
+                        false
                     }
-                        ?: run {
-                            isCheckIn = false
-                            callback(false)
-                        }
-                } else {
-                    isCheckIn = false
-                    callback(false)
-                }
+                callback(isCheckIn!!)
             }
-            .addOnFailureListener {
-                isCheckIn = false
-                callback(false)
-            }
+            .addOnFailureListener { callback(false) }
     }
 
     private fun handleCameraPermission() {
@@ -153,124 +124,82 @@ class AttendanceFragment : Fragment() {
     }
 
     private val cameraPermissionRequestLauncher: ActivityResultLauncher<String> =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean
-            ->
-            if (isGranted) {
-                startCamera()
-            } else {
-                Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT)
-                    .show()
-            }
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) startCamera() else showToast("Camera permission denied")
         }
 
-    // Start camera preview
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
+        ProcessCameraProvider.getInstance(requireActivity())
+            .addListener(
+                {
+                    val cameraProvider = ProcessCameraProvider.getInstance(requireActivity()).get()
+                    val preview =
+                        Preview.Builder().build().also {
+                            it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                        }
+                    imageCapture = ImageCapture.Builder().build()
 
-        cameraProviderFuture.addListener(
-            {
-                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-                val preview =
-                    Preview.Builder().build().also {
-                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                    try {
+                        cameraProvider.unbindAll()
+                        cameraProvider.bindToLifecycle(
+                            this, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageCapture)
+                    } catch (ex: Exception) {
+                        showToast(ex.message ?: "Error starting camera")
                     }
-
-                imageCapture = ImageCapture.Builder().build()
-
-                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-                try {
-                    cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
-                } catch (ex: Exception) {
-                    Toast.makeText(requireContext(), ex.message, Toast.LENGTH_SHORT).show()
-                }
-            },
-            ContextCompat.getMainExecutor(requireContext()))
+                },
+                ContextCompat.getMainExecutor(requireContext()))
     }
 
-    // Capture a photo
     private fun takePhoto() {
-        val imageCapture = imageCapture ?: return
-        val uid = auth.currentUser?.uid ?: "unknown_user"
-        val dateFormat = SimpleDateFormat("ddMMyyyy_HHmmss", Locale.getDefault())
-        val currentDateTime = dateFormat.format(System.currentTimeMillis())
-        val attendanceType = if (isCheckIn == true) "check_in" else "check_out"
+        imageCapture?.let { capture ->
+            val uid = auth.currentUser?.uid ?: "unknown_user"
+            val currentDateTime =
+                SimpleDateFormat("ddMMyyyy_HHmmss", Locale.getDefault())
+                    .format(System.currentTimeMillis())
+            val attendanceType = if (isCheckIn == true) "check_in" else "check_out"
+            val filename = "${uid}_${currentDateTime}_${attendanceType}.jpg"
 
-        val filename = "${uid}_${currentDateTime}_${attendanceType}.jpg"
-        val outputOptions =
-            ImageCapture.OutputFileOptions.Builder(createImageFile(filename)).build()
-
-        imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val uri = outputFileResults.savedUri
-                    uri?.let {
-                        imageBitmap =
-                            if (android.os.Build.VERSION.SDK_INT >=
-                                android.os.Build.VERSION_CODES.P) {
-                                ImageDecoder.decodeBitmap(
-                                    ImageDecoder.createSource(requireContext().contentResolver, it))
-                            } else {
-                                MediaStore.Images.Media.getBitmap(
-                                    requireContext().contentResolver, it)
-                            }
-
-                        //                        imageBitmap = correctOrientation(imageBitmap!!,
-                        // it)
-
-                        binding.imgPreview.setImageBitmap(imageBitmap)
-                        bindDiscardBtn()
-                        binding.imgPreview.visibility = View.VISIBLE
-                        binding.viewFinder.visibility = View.GONE
-                        imageUri = uri
+            val outputOptions =
+                ImageCapture.OutputFileOptions.Builder(createImageFile(filename)).build()
+            capture.takePicture(
+                outputOptions,
+                ContextCompat.getMainExecutor(requireContext()),
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                        outputFileResults.savedUri?.let { uri ->
+                            imageBitmap = decodeBitmapFromUri(uri)
+                            updateImagePreview(uri)
+                        }
                     }
-                }
 
-                override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(requireContext(), "Photo capture failed", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            })
-    }
-
-    // Rotate the bitmap if needed based on the image's EXIF orientation
-    private fun correctOrientation(bitmap: Bitmap, uri: Uri): Bitmap {
-        val inputStream = requireContext().contentResolver.openInputStream(uri) ?: return bitmap
-        val exifInterface = androidx.exifinterface.media.ExifInterface(inputStream)
-        val orientation =
-            exifInterface.getAttributeInt(
-                androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
-                androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
-        inputStream.close() // Close stream after use
-        return when (orientation) {
-            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 ->
-                rotateImage(bitmap, 90f)
-            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 ->
-                rotateImage(bitmap, 180f)
-            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 ->
-                rotateImage(bitmap, 270f)
-            else -> bitmap
+                    override fun onError(exception: ImageCaptureException) {
+                        showToast("Photo capture failed")
+                    }
+                })
         }
     }
 
-    // Helper function to rotate the image
-    private fun rotateImage(source: Bitmap, angle: Float): Bitmap {
-        val matrix = android.graphics.Matrix()
-        matrix.postRotate(angle)
-        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    private fun decodeBitmapFromUri(uri: Uri): Bitmap? {
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            ImageDecoder.decodeBitmap(
+                ImageDecoder.createSource(requireContext().contentResolver, uri))
+        } else {
+            MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+        }
     }
 
-    // Create a file for the image
+    private fun updateImagePreview(uri: Uri) {
+        binding.imgPreview.setImageBitmap(imageBitmap)
+        bindDiscardBtn()
+        binding.imgPreview.visibility = View.VISIBLE
+        binding.viewFinder.visibility = View.GONE
+        imageUri = uri
+    }
+
     private fun createImageFile(filename: String): File {
-        val storageDir = requireContext().cacheDir
-        return File(storageDir, filename)
+        return File(requireContext().cacheDir, filename)
     }
 
-    //    upload photo from gallery
     private fun uploadPhotoFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryLauncher.launch(intent)
@@ -279,23 +208,10 @@ class AttendanceFragment : Fragment() {
     private val galleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.data?.let { uri: Uri ->
+                result.data?.data?.let { uri ->
                     imageUri = uri
-
-                    imageBitmap =
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                            ImageDecoder.decodeBitmap(
-                                ImageDecoder.createSource(requireContext().contentResolver, uri))
-                        } else {
-                            MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
-                        }
-
-                    //                    imageBitmap = correctOrientation(imageBitmap!!, uri)
-
-                    binding.imgPreview.setImageBitmap(imageBitmap)
-                    bindDiscardBtn()
-                    binding.imgPreview.visibility = View.VISIBLE
-                    binding.viewFinder.visibility = View.GONE
+                    imageBitmap = decodeBitmapFromUri(uri)
+                    updateImagePreview(uri)
                 }
             }
         }
@@ -310,150 +226,74 @@ class AttendanceFragment : Fragment() {
         startCamera()
     }
 
-    // Submit attendance
     private fun submitAttendance() {
         binding.btnSubmit.isEnabled = false
 
         if (imageBitmap == null || auth.currentUser?.uid == null) {
-            Toast.makeText(requireContext(), "No photo captured", Toast.LENGTH_SHORT).show()
+            showToast("No photo captured")
             return
         }
 
-        val userId = auth.currentUser?.uid!!
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val currentDate = dateFormat.format(Date())
+        val userId = auth.currentUser!!.uid
+        val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
         val filename =
             "${userId}_${currentDate}_${if (isCheckIn == true) "checkout" else "checkin"}.jpg"
         val storageRef = storage.reference.child("attendance/$filename")
 
-        val baos = ByteArrayOutputStream()
-        imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 70, baos)
-        val data = baos.toByteArray()
+        val data =
+            ByteArrayOutputStream()
+                .apply { imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 70, this) }
+                .toByteArray()
 
         storageRef
             .putBytes(data)
+            .addOnSuccessListener { saveAttendanceToDB(filename) }
+            .addOnFailureListener {
+                showToast("Upload failed")
+                binding.btnSubmit.isEnabled = true
+            }
+    }
+
+    private fun saveAttendanceToDB(filename: String) {
+        val userId = auth.currentUser!!.uid
+        val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+        val attendanceItem =
+            AttendanceItem(
+                date = currentDate,
+                checkInTime =
+                    if (isCheckIn == true)
+                        SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
+                    else "",
+                checkOutPhotoUrl = if (isCheckIn == true) "" else filename)
+
+        db.collection("attendance")
+            .document(userId)
+            .update("attendanceList", FieldValue.arrayUnion(attendanceItem))
             .addOnSuccessListener {
-                saveAttendanceToFirestore(filename)
-                isCheckIn = !isCheckIn!!
-                stopCamera()
-                findNavController().navigate(R.id.action_attendanceFragment_to_mainFragment)
+                showToast("Attendance submitted successfully")
+                navigateBack()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Upload failed", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun saveAttendanceToFirestore(filename: String) {
-        val userId = auth.currentUser?.uid ?: return
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val currentDate = dateFormat.format(Date())
-        val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-
-        val attendanceRef = db.collection("attendance").document(userId)
-
-        attendanceRef
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val attendance = document.toObject(Attendance::class.java)
-                    attendance?.let {
-                        val updatedAttendanceList = it.attendanceList.toMutableList()
-                        val todayAttendanceIndex =
-                            updatedAttendanceList.indexOfFirst { item -> item.date == currentDate }
-
-                        if (todayAttendanceIndex != -1) {
-                            // Update existing attendance for today
-                            val updatedItem =
-                                updatedAttendanceList[todayAttendanceIndex].copy(
-                                    checkInTime =
-                                        if (isCheckIn == true) currentTime
-                                        else
-                                            updatedAttendanceList[todayAttendanceIndex].checkInTime,
-                                    checkOutTime =
-                                        if (isCheckIn == false) currentTime
-                                        else
-                                            updatedAttendanceList[todayAttendanceIndex]
-                                                .checkOutTime,
-                                    checkInPhotoUrl =
-                                        if (isCheckIn == true) filename
-                                        else
-                                            updatedAttendanceList[todayAttendanceIndex]
-                                                .checkInPhotoUrl,
-                                    checkOutPhotoUrl =
-                                        if (isCheckIn == false) filename
-                                        else
-                                            updatedAttendanceList[todayAttendanceIndex]
-                                                .checkOutPhotoUrl)
-                            updatedAttendanceList[todayAttendanceIndex] = updatedItem
-                        } else {
-                            // Create new attendance for today
-                            val newAttendanceItem =
-                                AttendanceItem(
-                                    date = currentDate,
-                                    checkInTime = if (isCheckIn == true) currentTime else "",
-                                    checkOutTime = if (isCheckIn == false) currentTime else "",
-                                    checkInPhotoUrl = if (isCheckIn == true) filename else "",
-                                    checkOutPhotoUrl = if (isCheckIn == false) filename else "")
-                            updatedAttendanceList.add(newAttendanceItem)
-                        }
-
-                        attendanceRef
-                            .update("attendanceList", updatedAttendanceList)
-                            .addOnSuccessListener {
-                                Toast.makeText(
-                                        requireContext(), "Attendance updated", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                    }
-                } else {
-                    // Document does not exist, create a new one
-                    val newAttendanceItem =
-                        AttendanceItem(
-                            date = currentDate,
-                            checkInTime = if (isCheckIn == false) currentTime else "",
-                            checkOutTime = if (isCheckIn == true) currentTime else "",
-                            checkInPhotoUrl = if (isCheckIn == false) filename else "",
-                            checkOutPhotoUrl = if (isCheckIn == true) filename else "")
-                    val newAttendance =
-                        Attendance(userId = userId, attendanceList = listOf(newAttendanceItem))
-
-                    attendanceRef
-                        .set(newAttendance)
-                        .addOnSuccessListener {
-                            Toast.makeText(requireContext(), "Attendance saved", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-                        }
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+            .addOnFailureListener {
+                showToast("Failed to save attendance")
+                binding.btnSubmit.isEnabled = true
             }
     }
 
-    private fun stopCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
-
-        cameraProviderFuture.addListener(
-            { cameraProviderFuture.get().unbindAll() },
-            ContextCompat.getMainExecutor(requireContext()))
+    private fun navigateBack() {
+        findNavController().popBackStack()
     }
 
     private fun bindDiscardBtn() {
-        binding.discardImgBtn.visibility = View.VISIBLE
         binding.discardImgBtn.setOnClickListener { discardPhoto() }
+        binding.discardImgBtn.visibility = View.VISIBLE
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        stopCamera()
-        imageCapture = null
         _binding = null
     }
 }

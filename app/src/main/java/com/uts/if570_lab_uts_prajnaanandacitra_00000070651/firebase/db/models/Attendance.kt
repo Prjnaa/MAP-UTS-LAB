@@ -1,9 +1,6 @@
 package com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models
 
-data class Attendance(
-    val userId: String = "",
-    val attendanceList: List<AttendanceItem> = listOf()
-)
+data class Attendance(val userId: String = "", val attendanceList: List<AttendanceItem> = listOf())
 
 data class AttendanceItem(
     val date: String = "",

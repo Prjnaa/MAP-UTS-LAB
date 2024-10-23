@@ -20,12 +20,12 @@ fun EditText.passwordVisiblityToggle(context: Context) {
     var isVisible = false
 
     setOnTouchListener { v, event ->
-        if(event.action == MotionEvent.ACTION_UP) {
+        if (event.action == MotionEvent.ACTION_UP) {
             val drawableEnd = 2
-            if(event.rawX >= (this.right - this.compoundDrawables[drawableEnd].bounds.width())) {
+            if (event.rawX >= (this.right - this.compoundDrawables[drawableEnd].bounds.width())) {
                 isVisible = !isVisible
 
-                if(isVisible) {
+                if (isVisible) {
                     this.transformationMethod = HideReturnsTransformationMethod.getInstance()
                     setCompoundDrawablesWithIntrinsicBounds(null, null, eyeShutIcon, null)
                 } else {

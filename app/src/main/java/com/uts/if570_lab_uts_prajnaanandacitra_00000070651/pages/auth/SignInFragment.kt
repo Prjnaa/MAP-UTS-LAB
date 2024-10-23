@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.R
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentSignInBinding
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
@@ -33,14 +36,7 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser
-
-        //        seesion check
-        if (currentUser != null) {
-            findNavController().navigate(R.id.action_signInFragment_to_mainFragment)
-            return
-        }
+        auth = Firebase.auth
 
         with(binding) {
             //        toggle password visibility
@@ -80,9 +76,27 @@ class SignInFragment : Fragment() {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity()) {
             task: Task<AuthResult> ->
             if (task.isSuccessful) {
-                findNavController().navigate(R.id.action_signInFragment_to_mainFragment)
+                val user = auth.currentUser
+
+                user?.let {
+                    if (it.isEmailVerified) {
+                        findNavController().navigate(R.id.action_signInFragment_to_mainFragment)
+                    } else {
+                        auth.signOut()
+                        binding.signInButton.isEnabled = true
+                        Toast.makeText(
+                                requireContext(),
+                                "Email is not verified. Please verify your email before logging in.",
+                                Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
             } else {
-                //                        sign in error
+                Toast.makeText(
+                        requireContext(),
+                        "Sign In failed, check your account credentials.",
+                        Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }

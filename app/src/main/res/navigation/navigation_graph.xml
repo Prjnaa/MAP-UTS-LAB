@@ -90,4 +90,7 @@
             android:id="@+id/action_historyFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
+    <action
+        android:id="@+id/action_global_mainFragment"
+        app:destination="@id/mainFragment" />
 </navigation>

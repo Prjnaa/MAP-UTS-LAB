@@ -1,8 +1,6 @@
 package com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.history
 
 import HistoryAdapter
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,11 +19,11 @@ import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentH
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.config.FirebaseConfig
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.Attendance
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.AttendanceItem
-import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.history.carousel.CarouselAdapter
 
 class HistoryFragment : Fragment() {
     private var _binding: FragmentHistoryBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     private lateinit var adapter: HistoryAdapter
     private var attendanceList: MutableList<AttendanceItem> = mutableListOf()

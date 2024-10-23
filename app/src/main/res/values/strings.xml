@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IF570_LAB_UTS_Prajna Ananda Citra_00000070651</string>
+    <string name="app_name">Union</string>
 
     <string name="welcome_text">Welcome,</string>
     <string name="welcome_back">Welcome Back,</string>
@@ -42,6 +42,8 @@
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
     <string name="account">Account</string>
+    <string name="change_password">Change Password</string>
+    <string name="delete_account">Delete Account</string>
 
     <!--    ATTENDANCE-->
     <string name="history">History</string>
@@ -51,8 +53,6 @@
     <string name="submit_in">Check In</string>
     <string name="submit_out">Check Out</string>
     <string name="discard">Discard Photo</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--    HISTORY-->
     <string name="no_data">No Records Found.</string>
@@ -60,6 +60,13 @@
     <string name="check_out_time">Check-Out Time</string>
     <string name="time_placeholder">00:00:00</string>
     <string name="date_placeholder">Date</string>
+
+    <!--    MISC-->
+    <string name="check_out_time_text">Check-Out Time :</string>
+    <string name="check_in_time_text">Check-In Time :</string>
+    <string name="username_not_set_warning">Username Not Set.</string>
+    <string name="get_started_text">Get Started</string>
+    <string name="carousel">carousel</string>
 
 
 </resources>

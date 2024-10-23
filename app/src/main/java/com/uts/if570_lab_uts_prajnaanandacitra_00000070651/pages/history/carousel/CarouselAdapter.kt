@@ -16,7 +16,8 @@ class CarouselAdapter(private val imageUrls: List<String>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarouselViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.carousel_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.carousel_item, parent, false)
         return CarouselViewHolder(view)
     }
 

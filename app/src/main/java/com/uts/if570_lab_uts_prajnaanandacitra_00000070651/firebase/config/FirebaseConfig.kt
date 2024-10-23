@@ -10,23 +10,19 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 object FirebaseConfig {
-    @Volatile
-    private var firestoreInstance: FirebaseFirestore? = null
+    @Volatile private var firestoreInstance: FirebaseFirestore? = null
 
-    @Volatile
-    private var storageInstance: FirebaseStorage? = null
+    @Volatile private var storageInstance: FirebaseStorage? = null
 
     fun initializeApp(context: Context) {
         try {
             FirebaseApp.initializeApp(context)
 
-            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-                PlayIntegrityAppCheckProviderFactory.getInstance()
-            )
+            FirebaseAppCheck.getInstance()
+                .installAppCheckProviderFactory(PlayIntegrityAppCheckProviderFactory.getInstance())
 
-            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-                DebugAppCheckProviderFactory.getInstance()
-            )
+            FirebaseAppCheck.getInstance()
+                .installAppCheckProviderFactory(DebugAppCheckProviderFactory.getInstance())
 
             initializeDb()
             initializeStorage()
@@ -46,9 +42,9 @@ object FirebaseConfig {
     }
 
     private fun initializeStorage() {
-        if(storageInstance == null) {
+        if (storageInstance == null) {
             synchronized(this) {
-                if(storageInstance == null) {
+                if (storageInstance == null) {
                     storageInstance = FirebaseStorage.getInstance()
                 }
             }

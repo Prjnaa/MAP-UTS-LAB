@@ -3,10 +3,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="transparent">#00000000</color>
+
     <color name="sun">#FFCF3C</color>
     <color name="moon">#636A7A</color>
 
-    <color name="warning">#CB2828</color>
+    <color name="safe">#61B986</color>
+    <color name="danger">#D32F2F</color>
 
     <color name="user_image_background">#808080</color>
 
