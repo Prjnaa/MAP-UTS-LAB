@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp"
-    android:paddingTop="32dp"
-    android:paddingBottom="16dp"
+    android:paddingVertical="38dp"
 
     tools:context=".pages.history.HistoryFragment">
 

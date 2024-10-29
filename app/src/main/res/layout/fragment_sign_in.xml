@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:padding="16dp"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="38dp"
     tools:context=".pages.auth.SignInFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,15 +99,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="26dp"
-            android:layout_marginTop="720dp"
             android:layout_marginEnd="26dp"
             android:minHeight="52dp"
             android:text="@string/sign_in"
             android:textColor="@color/white"
             app:cornerRadius="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.85" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

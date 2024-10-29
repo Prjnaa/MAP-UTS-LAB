@@ -14,7 +14,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.R
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentSignInBinding
-import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisibilityToggle
+
 
 class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
@@ -40,7 +41,7 @@ class SignInFragment : Fragment() {
 
         with(binding) {
             //        toggle password visibility
-            passwordInput.passwordVisiblityToggle(requireContext())
+            passwordInput.passwordVisibilityToggle(requireContext())
 
             //        sign in button
             var emailInputError = emailInput.error

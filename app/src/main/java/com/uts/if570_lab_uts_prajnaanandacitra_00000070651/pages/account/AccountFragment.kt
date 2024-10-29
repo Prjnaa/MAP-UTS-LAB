@@ -2,7 +2,6 @@ package com.uts.if570_lab_uts_prajnaanandacitra_00000070651.pages.account
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -249,7 +248,6 @@ class AccountFragment : Fragment() {
                 Toast.makeText(
                         requireContext(), "Failed to update email: ${e.message}", Toast.LENGTH_LONG)
                     .show()
-                Log.e("AccountManager", "Email update failed", e)
                 onComplete(false)
             }
     }

@@ -27,7 +27,7 @@ object FirebaseConfig {
             initializeDb()
             initializeStorage()
         } catch (e: Exception) {
-            Log.e("FirebaseError", "Firebase initialization error: ${e.message}", e)
+            e.printStackTrace()
         }
     }
 

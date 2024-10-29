@@ -5,6 +5,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.Attendance
 
 fun Fragment.deleteAccount(
@@ -50,14 +51,21 @@ private fun deleteUserData(
     val userDocRef = db.collection("users").document(userId)
     val attendanceRef = db.collection("attendance").document(userId)
 
+    userDocRef.get().addOnSuccessListener { user ->
+        if (user.exists()) {
+            val userImageUrl = user.getString("imageUrl")
+            userImageUrl?.let { url -> deleteImageFromStorage(url, storage, "user") }
+        }
+    }
+
     attendanceRef
         .get()
         .addOnSuccessListener { document ->
             if (document.exists()) {
                 val attendance = document.toObject(Attendance::class.java)
                 attendance?.attendanceList?.forEach { item ->
-                    deleteImageFromStorage(item.checkInPhotoUrl, storage)
-                    deleteImageFromStorage(item.checkOutPhotoUrl, storage)
+                    deleteImageFromStorage(item.checkInPhotoUrl, storage, "attendance")
+                    deleteImageFromStorage(item.checkOutPhotoUrl, storage, "attendance")
                 }
             }
 
@@ -74,16 +82,27 @@ private fun deleteUserData(
         .addOnFailureListener { onComplete(false) }
 }
 
-private fun deleteImageFromStorage(imageUrl: String, storage: FirebaseStorage) {
-    if (imageUrl.isNotEmpty()) {
-        val imageRef = storage.getReferenceFromUrl(imageUrl)
-        imageRef
-            .delete()
-            .addOnSuccessListener {
-                // Image deleted successfully
-            }
-            .addOnFailureListener {
-                // Handle failure to delete
-            }
+private fun deleteImageFromStorage(imageFileName: String, storage: FirebaseStorage, path: String) {
+    if (imageFileName.isNotEmpty()) {
+
+        val storageAttendancePath = "gs://uts-map-53224.appspot.com/attendance/$imageFileName"
+        val storageUserPath = "gs://uts-map-53224.appspot.com/image/$imageFileName"
+
+        var imageRef: StorageReference
+        try {
+            imageRef =
+                if (path == "attendance") {
+                    storage.getReferenceFromUrl(storageAttendancePath)
+                } else if (path == "user") {
+                    storage.getReferenceFromUrl(storageUserPath)
+                } else {
+                    throw IllegalArgumentException("Invalid path provided")
+                }
+
+            imageRef.delete()
+
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
     }
 }

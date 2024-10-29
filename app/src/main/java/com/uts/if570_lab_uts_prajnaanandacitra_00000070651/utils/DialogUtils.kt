@@ -9,13 +9,13 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.auth
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.R
-import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisibilityToggle
 
 fun Fragment.showPassDialog(context: Context, onPasswordEntered: (String) -> Unit) {
     val dialogView = layoutInflater.inflate(R.layout.dialog_password_input, null)
     val passwordInput = dialogView.findViewById<EditText>(R.id.input_password)
 
-    passwordInput.passwordVisiblityToggle(requireContext())
+    passwordInput.passwordVisibilityToggle(requireContext())
 
     val dialog =
         AlertDialog.Builder(context)
@@ -47,9 +47,9 @@ fun Fragment.showChangePassDialog(context: Context) {
 
     val user = Firebase.auth.currentUser
 
-    confirmPassInput.passwordVisiblityToggle(requireContext())
-    newPassInput.passwordVisiblityToggle(requireContext())
-    currentPassInput.passwordVisiblityToggle(requireContext())
+    confirmPassInput.passwordVisibilityToggle(requireContext())
+    newPassInput.passwordVisibilityToggle(requireContext())
+    currentPassInput.passwordVisibilityToggle(requireContext())
 
     val resetPassDialog =
         AlertDialog.Builder(context)

@@ -5,9 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="32dp"
+    android:paddingVertical="38dp"
     android:paddingHorizontal="16dp"
-    android:paddingBottom="16dp"
     android:visibility="visible"
     tools:context=".pages.main.MainFragment">
 

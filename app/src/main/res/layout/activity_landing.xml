@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:padding="16dp"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="38dp"
     tools:context=".LandingActivity">
 
     <com.google.android.material.button.MaterialButton

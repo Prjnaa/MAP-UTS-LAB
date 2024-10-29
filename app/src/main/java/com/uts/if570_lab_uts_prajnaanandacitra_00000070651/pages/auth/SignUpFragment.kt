@@ -5,6 +5,7 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -15,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.R
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.databinding.FragmentSignUpBinding
-import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisiblityToggle
+import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.extensions.passwordVisibilityToggle
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.Attendance
 import com.uts.if570_lab_uts_prajnaanandacitra_00000070651.firebase.db.models.User
 
@@ -43,9 +44,9 @@ class SignUpFragment : Fragment() {
         db = FirebaseFirestore.getInstance()
 
         with(binding) {
-            passwordCreateInput.passwordVisiblityToggle(requireContext())
+            passwordCreateInput.passwordVisibilityToggle(requireContext())
 
-            confirmPassCreateInput.passwordVisiblityToggle(requireContext())
+            confirmPassCreateInput.passwordVisibilityToggle(requireContext())
 
             signUpBtn.setOnClickListener { validateAndSignUp() }
 
@@ -68,8 +69,6 @@ class SignUpFragment : Fragment() {
         val password = binding.passwordCreateInput.text.toString()
         val confirmPassword = binding.confirmPassCreateInput.text.toString()
 
-        clearErrors()
-
         when {
             username.isEmpty() -> setError(binding.usernameInput, R.string.username_empty)
             nim.isEmpty() -> setError(binding.nimInput, R.string.nim_empty)
@@ -87,17 +86,8 @@ class SignUpFragment : Fragment() {
         }
     }
 
-    private fun clearErrors() {
-        with(binding) {
-            usernameInput.error = null
-            editTextTextEmailAddress.error = null
-            passwordCreateInput.error = null
-            confirmPassCreateInput.error = null
-        }
-    }
-
     private fun setError(view: View, messageResId: Int) {
-        (view as? TextInputLayout)?.error = getString(messageResId)
+        (view as? EditText)?.error = getString(messageResId)
     }
 
     //    check email validity
